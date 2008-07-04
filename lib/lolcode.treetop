@@ -1,0 +1,135 @@
+grammar LOLCode
+  rule program
+    'HAI' s lines {
+      def run
+        lines.run
+      end
+    }
+  end
+  
+  rule lines
+    s seq:(line)* {
+      def run
+        seq.elements.each { |l| l.value }
+      end
+    }
+    
+  end
+  
+  rule line
+    l:(comment / command) s {
+      def value
+        l.value
+      end
+    }
+  end
+  
+  rule command
+    s 'VISIBLE' s expr '!' {
+      def value
+        puts expr.value
+      end
+    }
+    / assign
+  end
+  
+  rule assign
+    s 'LOL' s variable s 'R' expr {
+    	def value
+    	  variable.value = expr.value
+    	end
+    }
+    / expr
+  end
+
+  rule expr
+    s term seq:( s add_op s term )* s {
+    	def value
+    	  seq.elements.inject(term.value) { |sum, el|
+    	      el.add_op.operate(sum, el.term.value)
+    	    }
+    	end
+    }
+  end
+
+  rule term
+    factor s mul_op s term {	# Right-associative!
+    	def value
+    	  mul_op.operate(factor.value, term.value)
+    	end
+    }
+    / factor
+  end
+
+  rule factor
+    string
+    / variable
+    / number
+    / '(' expr ')' {
+    	def value
+    	  expr.value
+    	end
+    }
+  end
+
+  rule variable
+    [a-zA-Z_] [a-zA-Z0-9]* {
+    	def value
+    	  @@variables[text_value]
+    	end
+    	def value=(v)
+    	  (@@variables ||= {})[text_value] = v
+    	end
+    	def variables
+    	  @@variables
+    	end
+    }
+  end
+
+  rule number
+    ([1-9] [0-9]* / '0')	{ def value; text_value.to_i; end }
+  end
+
+  rule add_op
+    '+'				{ def operate(a, b); a+b; end }
+    / '-'			{ def operate(a, b); a-b; end }
+  end
+
+  rule mul_op
+    '*'				{ def operate(a, b); a*b; end }
+    / '/'			{ def operate(a, b); a/b; end }
+    / '%'			{ def operate(a, b); a%b; end }
+  end
+
+  rule s
+    [ \t\n\r]*
+  end
+
+  rule string
+    '"' inner_string '"'  {
+      def value
+        inner_string.value
+      end
+    }
+  end
+  
+  rule inner_string
+    [^"]* {
+      def value
+        text_value
+      end
+    }
+  end
+    
+  rule comment
+    s 'BTW' s rest_of_line {
+      def value
+        nil
+      end
+    }
+  end
+  
+  rule rest_of_line
+    .* !"\n"
+  end
+end
