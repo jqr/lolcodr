@@ -27,6 +27,16 @@ describe "LOLCode" do
       should_not_parse('')
     end
   end
+
+  describe "NUMBR" do
+    it "should parse" do
+      should_parse("HAI\n5", 'number')
+    end
+    
+    it "should return value" do
+      run("HAI\n5").should == 5
+    end
+  end
   
   describe "KTHXBYE" do
     it "should parse" do
