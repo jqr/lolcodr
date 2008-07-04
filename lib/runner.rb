@@ -16,11 +16,11 @@ if code
   puts code.inspect
   
   label 'CATBOX'
-  value = code.run
+  value, env = code.run
   
   label 'INSPEKT'
   puts "output = #{value.inspect}"
-  puts code.variables.inspect
+  puts env.inspect
 else
   puts "O NOES! UR CODE ARE GOING TO BASEMENT!!!"
 end

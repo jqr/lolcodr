@@ -1,16 +1,12 @@
 grammar LOLCode
   rule program
     start more_expressions:(expression)* {
-      def run
+      def run(env = {})
         value = nil
         more_expressions.elements.each do |expression|
-          value = expression.value
+          value = expression.value(env)
         end
-        value
-      end
-      
-      def variables
-        Environment
+        [value, env]
       end
     }
   end
@@ -21,22 +17,34 @@ grammar LOLCode
   
   rule expression
     os real_expression os nl {
-      def value
-        real_expression.value
+      def value(env = {})
+        real_expression.value(env)
       end
     }
   end
   
   rule real_expression
-    exit / string / number
+    exit / variable_declaration / string / number
   end
   
   rule exit
-    'KTHXBYE' { def value; exit; end }
+    'KTHXBYE' { def value(env = {}); exit; end }
+  end
+  
+  rule variable_declaration
+    'I' s 'HAS' s 'A' s variable {
+      def value(env = {})
+        env[variable.text_value] = nil
+      end
+    }
+  end
+  
+  rule variable
+    alpha alnum* !alnum
   end
   
   rule string
-    '"' literal:(!["] .)* '"' { def value; literal.text_value; end }
+    '"' literal:(!["] .)* '"' { def value(env = {}); literal.text_value; end }
   end
   
   rule number
@@ -44,11 +52,11 @@ grammar LOLCode
   end
 
   rule float
-    os ([1-9] [0-9]* '.' [0-9]+) os	{ def value; text_value.to_f; end }
+    os ([1-9] [0-9]* '.' [0-9]+) os	{ def value(env = {}); text_value.to_f; end }
   end
   
   rule integer
-    os ([1-9] [0-9]* / '0') os	{ def value; text_value.to_i; end }
+    os ([1-9] [0-9]* / '0') os	{ def value(env = {}); text_value.to_i; end }
   end
 
   rule s
@@ -66,4 +74,16 @@ grammar LOLCode
   rule nl
     [\n]
   end
+
+  rule alpha
+    [a-zA-Z]
+  end
+  
+  rule numeric
+    [0-9]
+  end
+  
+  rule alnum
+    alpha / numeric
+  end  
 end

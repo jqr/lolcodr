@@ -5,17 +5,29 @@ def parse(code)
 end
 
 def run(code)
-  parse(code).run
+  @output = parse(code).run 
+  @output.first
+end
+
+def env
+  @output[1]
+end
+
+def camelize(text)
+  text.split('_').collect do |word|
+    word.capitalize
+  end.join('')
 end
 
 def should_parse(code, node)
   (parsed = parse(code)).should_not be_nil
-  parsed.extension_modules.include?(eval("LOLCode::#{node.capitalize}0")).should_not be_nil
+  parsed.extension_modules.include?(eval("LOLCode::#{camelize(node)}0")).should_not be_nil
 end
 
 def should_not_parse(code)
   parse(code).should be_nil
 end
+
 
 describe "LOLCode" do
   describe "HAI" do
@@ -61,6 +73,17 @@ describe "LOLCode" do
   describe "KTHXBYE" do
     it "should parse" do
       should_parse("HAI\nKTHXBYE", 'exit')
+    end
+  end
+  
+  describe "I HAS A VAR" do
+    it "should parse" do
+      should_parse("HAI\nI HAS A VAR", 'variable_declaration')
+    end
+    
+    it "should assign nil" do
+      run("HAI\nI HAS A VAR")
+      env.include?('VAR').should be_true
     end
   end
   
