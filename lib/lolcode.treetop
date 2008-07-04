@@ -24,7 +24,7 @@ grammar LOLCode
   end
   
   rule real_expression
-    exit / variable_declaration / string / number
+    exit / variable_declaration / string / number / boolean
   end
   
   rule exit
@@ -69,6 +69,14 @@ grammar LOLCode
   
   rule integer
     os ([1-9] [0-9]* / '0') os	{ def value(env = {}); text_value.to_i; end }
+  end
+  
+  rule boolean
+    ('WIN' / 'FAIL') {
+      def value(env = {})
+        text_value == 'WIN'
+      end
+    }
   end
 
   rule s

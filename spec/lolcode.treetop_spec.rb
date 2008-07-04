@@ -70,6 +70,20 @@ describe "LOLCode" do
     end
   end
   
+  describe "TROOF" do
+    it "should parse" do
+      should_parse("HAI\nWIN", 'float')
+    end
+    
+    it "WIN should return true" do
+      run("HAI\nWIN").should == true
+    end
+
+    it "FAIL should return false" do
+      run("HAI\nFAIL").should == false
+    end
+  end
+  
   describe "KTHXBYE" do
     it "should parse" do
       should_parse("HAI\nKTHXBYE", 'exit')
@@ -97,6 +111,7 @@ describe "LOLCode" do
       env['VAR'].should == 2
     end
   end
+  
   
   
 end
