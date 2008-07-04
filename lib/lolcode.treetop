@@ -16,11 +16,11 @@ grammar LOLCode
   end
   
   rule start
-    'HAI' s [\n] 
+    'HAI' os [\n] 
   end
   
   rule expression
-    s real_expression s [\n] {
+    os real_expression os [\n] {
       def value
         real_expression.value
       end
@@ -40,15 +40,19 @@ grammar LOLCode
   end
 
   rule float
-    s ([1-9] [0-9]* '.' [0-9]+) s	{ def value; text_value.to_f; end }
+    os ([1-9] [0-9]* '.' [0-9]+) os	{ def value; text_value.to_f; end }
   end
   
   rule integer
-    s ([1-9] [0-9]* / '0') s	{ def value; text_value.to_i; end }
+    os ([1-9] [0-9]* / '0') os	{ def value; text_value.to_i; end }
   end
 
   rule s
-    [ \t]*
+    [ \t]+
+  end
+  
+  rule os
+    s*
   end
 
   rule ns
