@@ -30,11 +30,21 @@ describe "LOLCode" do
 
   describe "NUMBR" do
     it "should parse" do
-      should_parse("HAI\n5", 'number')
+      should_parse("HAI\n5", 'integer')
     end
     
     it "should return value" do
       run("HAI\n5").should == 5
+    end
+  end
+
+  describe "NUMBAR" do
+    it "should parse" do
+      should_parse("HAI\n5.2", 'float')
+    end
+    
+    it "should return value" do
+      run("HAI\n5.2").should == 5.2
     end
   end
   

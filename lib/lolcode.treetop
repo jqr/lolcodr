@@ -36,6 +36,14 @@ grammar LOLCode
   end
   
   rule number
+    float / integer
+  end
+
+  rule float
+    s ([1-9] [0-9]* '.' [0-9]+) s	{ def value; text_value.to_f; end }
+  end
+  
+  rule integer
     s ([1-9] [0-9]* / '0') s	{ def value; text_value.to_i; end }
   end
 
