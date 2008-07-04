@@ -1,23 +1,27 @@
 grammar LOLCode
   rule program
-    'HAI' s lines {
+    "HAI" [\n] lines {
       def run
-        lines.run
+        lines.value
+      end
+      
+      def variables
+        Environment
       end
     }
   end
   
   rule lines
-    s seq:(line)* {
-      def run
+    loop 
+    / s seq:(line)* {
+      def value
         seq.elements.each { |l| l.value }
       end
     }
-    
   end
   
   rule line
-    l:(comment / command) s {
+    s l:(comment / command) [\n] {
       def value
         l.value
       end
@@ -25,8 +29,18 @@ grammar LOLCode
   end
   
   rule command
-    require / variable_declaration / variable_increment / print / exit
+    if / require / variable_declaration / variable_increment / print / exit
     / assign
+  end
+  
+  rule if
+    s 'IZ' s condition:command s 'BIGGER THAN' s compare:command '?' s conditional:command {
+      def value
+        if condition.value > compare.value
+          conditional.value
+        end
+      end
+    }
   end
   
   rule require
@@ -37,8 +51,19 @@ grammar LOLCode
     }
   end
   
+  rule loop
+    'IM IN UR LOOP' lines 'KTHX' {
+      def value
+        raise "loop"
+        loop do
+          lines.run
+        end
+      end
+    }
+  end
+  
   rule variable_declaration
-    s 'I HAS A' s name:([A-Z]+) {
+    s 'I HAS A' variable {
       def value
         nil
       end
@@ -46,9 +71,9 @@ grammar LOLCode
   end
   
   rule variable_increment
-    s 'UP' s variable '!!' number {
+    s 'UP' variable '!!' number {
       def value
-        variable.value += number.value
+        variable.value = variable.value.to_i + number.value
       end
     }
   end
@@ -70,7 +95,7 @@ grammar LOLCode
   end
   
   rule assign
-    s 'LOL' s variable s 'R' expr {
+    s 'LOL' variable 'R' expr {
     	def value
     	  variable.value = expr.value
     	end
@@ -109,15 +134,12 @@ grammar LOLCode
   end
 
   rule variable
-    [a-zA-Z_] [a-zA-Z0-9]* {
+    s [a-zA-Z_] [a-zA-Z0-9]* s {
     	def value
-    	  @@variables[text_value]
+    	  Environment[text_value.strip]
     	end
     	def value=(v)
-    	  (@@variables ||= {})[text_value] = v
-    	end
-    	def variables
-    	  @@variables
+    	  Environment[text_value.strip] = v
     	end
     }
   end
@@ -138,7 +160,7 @@ grammar LOLCode
   end
 
   rule s
-    [ \t\n\r]*
+    [ \t]*
   end
 
   rule string

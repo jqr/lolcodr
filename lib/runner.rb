@@ -4,9 +4,22 @@ require 'lolcode'
 
 parser = LOLCodeParser.new
 
+Environment = {}
+
+def label(text)
+  puts "= " + text + " " + "=" * 50
+end
+
 code = parser.parse(File.read('count.lolcode') + "\n")
 if code
-  code.run 
+  label 'TREEZ'
+  puts code.inspect
+  
+  label 'CATBOX'
+  code.run
+  
+  label 'INSPEKT'
+  puts code.variables.inspect
 else
-  puts "O NOES! UR C0DZ SUX!!!"
+  puts "O NOES! UR CODE ARE GOING TO BASEMENT!!!"
 end
