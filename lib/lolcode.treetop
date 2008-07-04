@@ -28,11 +28,15 @@ grammar LOLCode
   end
   
   rule real_expression
-    exit / number
+    exit / string / number
   end
   
   rule exit
     'KTHXBYE' { def value; exit; end }
+  end
+  
+  rule string
+    '"' literal:(!["] .)* '"' { def value; literal.text_value; end }
   end
   
   rule number

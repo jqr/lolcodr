@@ -28,6 +28,16 @@ describe "LOLCode" do
     end
   end
 
+  describe "YARN" do
+    it "should parse" do
+      should_parse(%Q{HAI\n"test"}, 'string')
+    end
+    
+    it "should return value" do
+      run(%Q{HAI\n"test"}).should == "test"
+    end
+  end
+  
   describe "NUMBR" do
     it "should parse" do
       should_parse("HAI\n5", 'integer')
