@@ -32,6 +32,18 @@ grammar LOLCode
   end
   
   rule variable_declaration
+    variable_declaration_with_set / variable_declaration_without_set
+  end
+
+  rule variable_declaration_with_set
+    'I' s 'HAS' s 'A' s variable s 'ITZ' real_expression {
+      def value(env = {})
+        env[variable.text_value] = real_expression.value
+      end
+    }
+  end
+  
+  rule variable_declaration_without_set
     'I' s 'HAS' s 'A' s variable {
       def value(env = {})
         env[variable.text_value] = nil

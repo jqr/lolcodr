@@ -75,15 +75,26 @@ describe "LOLCode" do
       should_parse("HAI\nKTHXBYE", 'exit')
     end
   end
-  
+
   describe "I HAS A VAR" do
     it "should parse" do
-      should_parse("HAI\nI HAS A VAR", 'variable_declaration')
+      should_parse("HAI\nI HAS A VAR", 'variable_declaration_without_set')
     end
     
     it "should assign nil" do
       run("HAI\nI HAS A VAR")
       env.include?('VAR').should be_true
+    end
+  end
+  
+  describe "I HAS A VAR ITZ 5" do
+    it "should parse" do
+      should_parse("HAI\nI HAS A VAR ITZ 2", 'variable_declaration_with_set')
+    end
+    
+    it "should assign nil" do
+      run("HAI\nI HAS A VAR ITZ 2")
+      env['VAR'].should == 2
     end
   end
   
