@@ -25,12 +25,48 @@ grammar LOLCode
   end
   
   rule command
-    s 'VISIBLE' s expr '!' {
+    require / variable_declaration / variable_increment / print / exit
+    / assign
+  end
+  
+  rule require
+    s 'CAN HAS' s lib:([A-Z]+) '?' {
+      def value
+        nil
+      end
+    }
+  end
+  
+  rule variable_declaration
+    s 'I HAS A' s name:([A-Z]+) {
+      def value
+        nil
+      end
+    }
+  end
+  
+  rule variable_increment
+    s 'UP' s variable '!!' number {
+      def value
+        variable.value += number.value
+      end
+    }
+  end
+
+  rule print
+    s 'VISIBLE' s expr '!'? {
       def value
         puts expr.value
       end
     }
-    / assign
+  end
+  
+  rule exit
+    s 'KTHXBYE' {
+      def value
+        exit
+      end
+    }
   end
   
   rule assign
