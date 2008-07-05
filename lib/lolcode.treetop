@@ -16,11 +16,13 @@ grammar LOLCode
   end
   
   rule expression
-    os real_expression os nl {
+    if_else
+    / if
+    / os real_expression os nl {
       def value(env = {})
         real_expression.value(env)
       end
-    }
+    } 
   end
   
   rule real_expression
@@ -28,7 +30,28 @@ grammar LOLCode
   end
 
   rule builtin_command
-    exit / print / increment_variable
+     exit / print / increment_variable
+  end
+
+  rule if
+    os boolean ', O RLY?' nl os 'YA RLY' os nl expressions:expression* 'OIC' os nl {
+      def value(env = {})
+        expressions.elements.each do |expression|
+          expression.value(env)
+        end
+      end
+    }
+  end
+
+  rule if_else
+    os boolean ', O RLY?' nl os 'YA RLY' os nl if_expressions:expression* 'NO WAI' os nl else_expressions:expression* 'OIC' os nl {
+      def value(env = {})
+        expressions = boolean.value ? if_expressions : else_expressions
+        expressions.elements.each do |expression|
+          expression.value(env)
+        end
+      end
+    }
   end
   
   rule exit

@@ -159,4 +159,25 @@ describe "LOLCode" do
     end
   end
   
+  describe "O RLY?" do
+    it "should parse without NO WAI" do
+      should_parse("HAI\nWIN, O RLY?\nYA RLY\nOIC", 'if')
+    end
+
+    it "should parse with NO WAI" do
+      should_parse("HAI\nWIN, O RLY?\nYA RLY\nNO WAI\nOIC", 'if')
+    end
+    
+    it "should execute YA RLY" do
+      run("HAI\nWIN, O RLY?\nYA RLY\nI HAS A VAR ITZ 1\nOIC")
+      env['VAR'].should == 1
+    end
+
+    it "should execute NO WAI" do
+      run("HAI\nFAIL, O RLY?\nYA RLY\nI HAS A VAR ITZ 1\nNO WAI\nI HAS A VAR ITZ 2\nOIC")
+      env['VAR'].should == 2
+    end
+    
+  end
+  
 end
