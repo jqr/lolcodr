@@ -179,7 +179,11 @@ grammar LOLCode
   end
   
   rule string
-    '"' literal:(!["] .)* '"' { def value(env = {}); literal.text_value; end }
+    '"' literal:(!'"' . / ':"')* '"' {
+      def value(env = {})
+        literal.text_value.gsub(%r{:\)}, "\n").gsub(%r{:>}, "\t").gsub(%r{:o}, "\g").gsub(%r{:"}, '"').gsub(%r{::}, ":")
+      end
+    }
   end
   
   rule number

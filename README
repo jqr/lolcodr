@@ -14,6 +14,12 @@ Must start every program with this:
 
 Strings(YARNS)
   "asdf"
+
+Escape Codes:
+  Newline: ":)"
+  Tab: ":>"
+  Bell: ":o"
+  Colon: "::"
   
 Integers(NUMBRS)
   123
@@ -23,6 +29,7 @@ Floats(NUMBARS)
   
 Print command with optional newline removal
   VISIBLE <value>[!]
+
 
 Optional exit command:
   KTHXBYE

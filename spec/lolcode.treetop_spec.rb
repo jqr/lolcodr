@@ -62,6 +62,19 @@ describe "LOLCode" do
     it "should return value" do
       run(%Q{HAI\n"test"}).should == "test"
     end
+    
+    escapes = {
+      ':)' => "\n",
+      ':>' => "\t",
+      ':o' => "\g",
+      ':"' => '"',
+      '::' => ':',
+    }
+    escapes.each do |input, output|
+      it "should parse #{input.inspect} as #{output.inspect}" do
+        run(%Q{HAI\n"#{input}"}).should == output
+      end
+    end
   end
   
   describe "NUMBR" do
