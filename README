@@ -50,8 +50,12 @@ Increment with optional delta, defaults to 1:
 Equal comparison:
   BOTH SAEM <value> AN <value>
   
-If statement with optional else:
-  <value>, O RLY?
+Bare value expressions set IT variable:
+  WIN
+  VISIBLE IT
+
+If statement with optional else, operates on IT:
+  O RLY?
   YA RLY
     <expressions>
   [NO WAI

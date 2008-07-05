@@ -28,9 +28,17 @@ grammar LOLCode
   end
   
   rule real_expression
-    os e:(builtin_command / value_expression) os {
+    os e:(builtin_command / bare_value_expression) os {
       def value(env)
         e.value(env)
+      end
+    }
+  end
+  
+  rule bare_value_expression
+    os value_expression {
+      def value(env)
+        env['IT'] = value_expression.value(env)
       end
     }
   end
@@ -44,9 +52,9 @@ grammar LOLCode
   end
 
   rule if
-    os boolean:value_expression ', O RLY?' eoc 'YA RLY' eoc expressions:expression* 'OIC' eoc {
+    os 'O RLY?' eoc 'YA RLY' eoc expressions:expression* 'OIC' eoc {
       def value(env)
-        if boolean.value(env)
+        if env['IT']
           expressions.elements.each do |expression|
             expression.value(env)
           end
@@ -56,9 +64,9 @@ grammar LOLCode
   end
 
   rule if_else
-    os boolean:value_expression ', O RLY?' eoc os 'YA RLY' os eoc if_expressions:expression* os 'NO WAI' os eoc else_expressions:expression* os 'OIC' os eoc {
+    os 'O RLY?' eoc os 'YA RLY' os eoc if_expressions:expression* os 'NO WAI' os eoc else_expressions:expression* os 'OIC' os eoc {
       def value(env)
-        expressions = boolean.value(env) ? if_expressions : else_expressions
+        expressions = env['IT'] ? if_expressions : else_expressions
         expressions.elements.each do |expression|
           expression.value(env)
         end

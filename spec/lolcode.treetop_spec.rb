@@ -115,6 +115,18 @@ describe "LOLCode" do
       run("HAI\nFAIL").should == false
     end
   end
+
+  describe "IT" do
+    it "should be automatically set by a bare value" do
+      run("HAI\n1")
+      env['IT'].should == 1
+    end
+
+    it "should be automatically set by a bare value expression" do
+      run("HAI\nBOTH SAEM 1 AN 2")
+      env['IT'].should == false
+    end
+  end
   
   describe "KTHXBYE" do
     it "should parse" do
