@@ -12,7 +12,7 @@ grammar LOLCode
   end
   
   rule start
-    onl 'HAI' os nl
+    onl 'HAI' os eoc
   end
   
   rule expression
@@ -20,7 +20,7 @@ grammar LOLCode
     / if
     / short_if
     / loop
-    / real_expression nl {
+    / real_expression eoc {
       def value(env)
         real_expression.value(env)
       end
@@ -44,7 +44,7 @@ grammar LOLCode
   end
 
   rule if
-    os boolean:value_expression ', O RLY?' nl 'YA RLY' nl expressions:expression* 'OIC' nl {
+    os boolean:value_expression ', O RLY?' eoc 'YA RLY' eoc expressions:expression* 'OIC' eoc {
       def value(env)
         if boolean.value(env)
           expressions.elements.each do |expression|
@@ -56,7 +56,7 @@ grammar LOLCode
   end
 
   rule if_else
-    os boolean:value_expression ', O RLY?' nl os 'YA RLY' os nl if_expressions:expression* os 'NO WAI' os nl else_expressions:expression* os 'OIC' os nl {
+    os boolean:value_expression ', O RLY?' eoc os 'YA RLY' os eoc if_expressions:expression* os 'NO WAI' os eoc else_expressions:expression* os 'OIC' os eoc {
       def value(env)
         expressions = boolean.value(env) ? if_expressions : else_expressions
         expressions.elements.each do |expression|
@@ -85,7 +85,7 @@ grammar LOLCode
   end
   
   rule loop
-    os 'IM IN YR' s label os nl expressions:expression* os 'IM OUTTA YR' s label os nl {
+    os 'IM IN YR' s label os eoc expressions:expression* os 'IM OUTTA YR' s label os eoc {
       def value(env)
         catch :break do
           loop do
@@ -255,6 +255,10 @@ grammar LOLCode
 
   rule ns
     ![ \t] .
+  end
+  
+  rule eoc
+    nl / ','
   end
   
   rule nl

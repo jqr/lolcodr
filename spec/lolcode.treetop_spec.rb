@@ -53,6 +53,10 @@ describe "LOLCode" do
     it "should parse a leading newline" do
       should_parse("\nHAI", 'program')
     end
+    
+    it "should support comma as a comand delimiter" do
+      should_parse("HAI,1", 'integer')
+    end
   end
 
   describe "YARN" do
