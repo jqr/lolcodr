@@ -40,7 +40,7 @@ grammar LOLCode
   end
 
   rule builtin_command
-     exit / break / print / increment_variable
+     exit / break / print / get_line / increment_variable
   end
 
   rule if
@@ -110,6 +110,14 @@ grammar LOLCode
         else
           print real_expression.value
         end
+      end
+    }
+  end
+  
+  rule get_line
+    'GIMMEH' s variable {
+      def value(env = {})
+        env[variable.text_value] = gets.chomp
       end
     }
   end

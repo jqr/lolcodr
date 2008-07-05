@@ -126,7 +126,12 @@ describe "LOLCode" do
       should_parse("HAI\nVISIBLE 1!", 'print')
     end
   end
-  
+
+  describe "GIMMEH" do
+    it "should parse" do
+      should_parse("HAI\nGIMMEH VAR", 'get_line')
+    end
+  end
 
   describe "I HAS A VAR" do
     it "should parse" do
