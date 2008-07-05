@@ -18,6 +18,7 @@ grammar LOLCode
   rule expression
     if_else
     / if
+    / short_if
     / loop
     / real_expression nl {
       def value(env = {})
@@ -59,6 +60,16 @@ grammar LOLCode
       def value(env = {})
         expressions = boolean.value ? if_expressions : else_expressions
         expressions.elements.each do |expression|
+          expression.value(env)
+        end
+      end
+    }
+  end
+  
+  rule short_if
+    os 'IZ' s boolean:value_expression '?' expression {
+      def value(env = {})
+        if boolean.value(env)
           expression.value(env)
         end
       end
@@ -156,7 +167,7 @@ grammar LOLCode
   end
   
   rule keyword
-    'OIC' / 'BOTH SAEM'
+    'OIC' / 'BOTH SAEM' / 'IZ'
   end
   
   rule variable

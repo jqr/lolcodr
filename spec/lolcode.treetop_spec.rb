@@ -177,6 +177,22 @@ describe "LOLCode" do
     end
   end
   
+  describe "IZ" do
+    it "should parse" do
+      should_parse("HAI\nIZ BOTH SAEM 1 AN 1? KTHX", 'short_if')
+    end
+    
+    it "should execute" do
+      run("HAI\n\nIZ BOTH SAEM 1 AN 1? I HAS A VAR ITZ 1")
+      env['VAR'].should == 1
+    end
+
+    it "should not execute" do
+      run("HAI\n\nIZ BOTH SAEM 2 AN 1? I HAS A VAR ITZ 1")
+      env['VAR'].should_not == 1
+    end
+  end
+  
   describe "O RLY?" do
     it "should parse without NO WAI" do
       should_parse("HAI\nWIN, O RLY?\nYA RLY\nOIC", 'if')
