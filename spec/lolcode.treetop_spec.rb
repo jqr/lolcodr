@@ -226,7 +226,6 @@ describe "LOLCode" do
       run("HAI\nI HAS A VAR ITZ 1\nIM IN YR LOOPZ\nUP VAR!!\nBOTH SAEM VAR AN 3, O RLY?\nYA RLY\nKTHX\nOIC\nIM OUTTA YR LOOPZ")
       env['VAR'].should == 3
     end
-
   end
   
 end
