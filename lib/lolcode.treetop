@@ -21,7 +21,7 @@ grammar LOLCode
     / short_if
     / loop
     / real_expression nl {
-      def value(env = {})
+      def value(env)
         real_expression.value(env)
       end
     } 
@@ -29,7 +29,7 @@ grammar LOLCode
   
   rule real_expression
     os e:(builtin_command / variable_declaration / value_expression) os {
-      def value(env = {})
+      def value(env)
         e.value(env)
       end
     }
@@ -45,7 +45,7 @@ grammar LOLCode
 
   rule if
     os boolean:value_expression ', O RLY?' nl 'YA RLY' nl expressions:expression* 'OIC' nl {
-      def value(env = {})
+      def value(env)
         if boolean.value(env)
           expressions.elements.each do |expression|
             expression.value(env)
@@ -57,8 +57,8 @@ grammar LOLCode
 
   rule if_else
     os boolean:value_expression ', O RLY?' nl os 'YA RLY' os nl if_expressions:expression* os 'NO WAI' os nl else_expressions:expression* os 'OIC' os nl {
-      def value(env = {})
-        expressions = boolean.value ? if_expressions : else_expressions
+      def value(env)
+        expressions = boolean.value(env) ? if_expressions : else_expressions
         expressions.elements.each do |expression|
           expression.value(env)
         end
@@ -68,7 +68,7 @@ grammar LOLCode
   
   rule short_if
     os 'IZ' s boolean:value_expression '?' expression {
-      def value(env = {})
+      def value(env)
         if boolean.value(env)
           expression.value(env)
         end
@@ -78,7 +78,7 @@ grammar LOLCode
 
   rule break
     'KTHX' {
-      def value(env = {})
+      def value(env)
         throw :break
       end
     }
@@ -86,7 +86,7 @@ grammar LOLCode
   
   rule loop
     os 'IM IN YR' s label os nl expressions:expression* os 'IM OUTTA YR' s label os nl {
-      def value(env = {})
+      def value(env)
         catch :break do
           loop do
             expressions.elements.each do |expression|
@@ -99,16 +99,16 @@ grammar LOLCode
   end
   
   rule exit
-    'KTHXBYE' { def value(env = {}); exit; end }
+    'KTHXBYE' { def value(env); exit; end }
   end
   
   rule print
     'VISIBLE' s real_expression disable_newline:('!')? {
-      def value(env = {})
+      def value(env)
         if disable_newline.text_value.empty?
-          puts real_expression.value
+          puts real_expression.value(env)
         else
-          print real_expression.value
+          print real_expression.value(env)
         end
       end
     }
@@ -116,8 +116,8 @@ grammar LOLCode
   
   rule get_line
     'GIMMEH' s variable {
-      def value(env = {})
-        env[variable.text_value] = gets.chomp
+      def value(env)
+        env[variable.text_value] = gets.chom
       end
     }
   end
@@ -128,7 +128,7 @@ grammar LOLCode
 
   rule increment_variable_with_delta
     'UP' s variable '!!' delta:real_expression {
-      def value(env = {})
+      def value(env)
         env[variable.text_value] += delta.value(env)
       end
     }
@@ -136,7 +136,7 @@ grammar LOLCode
   
   rule increment_variable_without_delta
     'UP' s variable '!!' {
-      def value(env = {})
+      def value(env)
         env[variable.text_value] += 1
       end
     }
@@ -148,15 +148,15 @@ grammar LOLCode
 
   rule variable_declaration_with_set
     'I' s 'HAS' s 'A' s variable s 'ITZ' s real_expression {
-      def value(env = {})
-        env[variable.text_value] = real_expression.value
+      def value(env)
+        env[variable.text_value] = real_expression.value(env)
       end
     }
   end
   
   rule variable_declaration_without_set
     'I' s 'HAS' s 'A' s variable {
-      def value(env = {})
+      def value(env)
         env[variable.text_value] = nil
       end
     }
@@ -168,7 +168,7 @@ grammar LOLCode
   
   rule equal
     'BOTH SAEM' s first:value_expression s 'AN' s second:value_expression {
-      def value(env = {})
+      def value(env)
         first.value(env) == second.value(env)
       end
     }
@@ -180,7 +180,7 @@ grammar LOLCode
   
   rule variable
     !keyword alpha alnum* {
-      def value(env = {})
+      def value(env)
         env[text_value]
       end
     }
@@ -188,7 +188,7 @@ grammar LOLCode
   
   rule string
     '"' literal:(!'"' . / ':"')* '"' {
-      def value(env = {})
+      def value(env)
         literal.text_value.gsub(%r{:\)}, "\n").gsub(%r{:>}, "\t").gsub(%r{:o}, "\g").gsub(%r{:"}, '"').gsub(%r{::}, ":")
       end
     }
@@ -199,16 +199,16 @@ grammar LOLCode
   end
 
   rule float
-    numeric+ '.' numeric+ { def value(env = {}); text_value.to_f; end }
+    numeric+ '.' numeric+ { def value(env); text_value.to_f; end }
   end
   
   rule integer
-    numeric+ { def value(env = {}); text_value.to_i; end }
+    numeric+ { def value(env); text_value.to_i; end }
   end
   
   rule boolean
     ('WIN' / 'FAIL') {
-      def value(env = {})
+      def value(env)
         text_value == 'WIN'
       end
     }
