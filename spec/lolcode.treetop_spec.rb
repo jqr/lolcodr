@@ -211,28 +211,45 @@ describe "LOLCode" do
     end
   end
   
-  describe "O RLY?" do
-    it "should parse without NO WAI" do
+  describe "value, O RLY? YA RLY ... OIC" do
+    it "should parse" do
       should_parse("HAI\nWIN, O RLY?\nYA RLY\nOIC", 'if')
     end
 
-    it "should parse with NO WAI" do
+    it "should execute YA RLY" do
+      run("HAI\nWIN, O RLY?\nYA RLY\nI HAS A YA ITZ 1\nOIC")
+      env['YA'].should == 1
+    end
+
+    it "should not execute YA RLY" do
+      run("HAI\nFAIL, O RLY?\nYA RLY\nI HAS A YA ITZ 1\nOIC")
+      env['YA'].should be_nil
+    end
+  end
+
+  describe "value, O RLY? YA RLY ... NO WAI ... OIC" do
+    it "should parse" do
       should_parse("HAI\nWIN, O RLY?\nYA RLY\nNO WAI\nOIC", 'if')
     end
     
     it "should execute YA RLY" do
-      run("HAI\nWIN, O RLY?\nYA RLY\nI HAS A VAR ITZ 1\nOIC")
-      env['VAR'].should == 1
+      run("HAI\nWIN, O RLY?\nYA RLY\nI HAS A YA ITZ 1\nNO WAI\nI HAS A NO ITZ 2\nOIC")
+      env['YA'].should == 1
     end
 
     it "should not execute YA RLY" do
-      run("HAI\nFAIL, O RLY?\nYA RLY\nI HAS A VAR ITZ 1\nOIC")
-      env['VAR'].should_not == 1
+      run("HAI\nFAIL, O RLY?\nYA RLY\nI HAS A YA ITZ 1\nNO WAI\nI HAS A NO ITZ 2\nOIC")
+      env['YA'].should be_nil
     end
 
     it "should execute NO WAI" do
-      run("HAI\nFAIL, O RLY?\nYA RLY\nI HAS A VAR ITZ 1\nNO WAI\nI HAS A VAR ITZ 2\nOIC")
-      env['VAR'].should == 2
+      run("HAI\nFAIL, O RLY?\nYA RLY\nI HAS A YA ITZ 1\nNO WAI\nI HAS A NO ITZ 2\nOIC")
+      env['NO'].should == 2
+    end
+
+    it "should execute NO WAI" do
+      run("HAI\nWIN, O RLY?\nYA RLY\nI HAS A YA ITZ 1\nNO WAI\nI HAS A NO ITZ 2\nOIC")
+      env['NO'].should be_nil
     end
   end
 
