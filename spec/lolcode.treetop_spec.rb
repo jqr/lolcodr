@@ -137,6 +137,26 @@ describe "LOLCode" do
     end
   end
   
+  describe "UP VAR!!" do
+    it "should parse" do
+      should_parse("HAI\nI HAS A VAR ITZ 1\nUP VAR!!", 'increment_variable_without_delta')
+    end
+    
+    it "should increment" do
+      run("HAI\nI HAS A VAR ITZ 1\nUP VAR!!")
+      env['VAR'].should == 2
+    end
+  end
   
+  describe "UP VAR!!5" do
+    it "should parse" do
+      should_parse("HAI\nI HAS A VAR ITZ 1\nUP VAR!!1", 'increment_variable_with_delta')
+    end
+
+    it "should increment by delta" do
+      run("HAI\nI HAS A VAR ITZ 1\nUP VAR!!5")
+      env['VAR'].should == 6
+    end
+  end
   
 end

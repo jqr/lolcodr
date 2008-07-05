@@ -28,7 +28,7 @@ grammar LOLCode
   end
 
   rule builtin_command
-    exit / print
+    exit / print / increment_variable
   end
   
   rule exit
@@ -43,6 +43,26 @@ grammar LOLCode
         else
           print real_expression.value
         end
+      end
+    }
+  end
+
+  rule increment_variable
+    increment_variable_with_delta / increment_variable_without_delta
+  end  
+
+  rule increment_variable_with_delta
+    'UP' s variable '!!' delta:real_expression {
+      def value(env = {})
+        env[variable.text_value] += delta.value(env)
+      end
+    }
+  end
+  
+  rule increment_variable_without_delta
+    'UP' s variable '!!' {
+      def value(env = {})
+        env[variable.text_value] += 1
       end
     }
   end
