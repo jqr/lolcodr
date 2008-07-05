@@ -7,7 +7,7 @@ parser = LOLCodeParser.new
 Environment = {}
 
 def label(text)
-  puts "= " + text + " " + "=" * 50
+  puts "\n= " + text + " " + "=" * 50
 end
 
 code = parser.parse(File.read('count.lolcode') + "\n")

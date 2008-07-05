@@ -36,9 +36,13 @@ grammar LOLCode
   end
   
   rule print
-    'VISIBLE' s real_expression {
+    'VISIBLE' s real_expression disable_newline:('!')? {
       def value(env = {})
-        puts real_expression.value
+        if disable_newline.text_value.empty?
+          puts real_expression.value
+        else
+          print real_expression.value
+        end
       end
     }
   end

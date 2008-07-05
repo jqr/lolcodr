@@ -94,6 +94,10 @@ describe "LOLCode" do
     it "should parse" do
       should_parse("HAI\nVISIBLE 1", 'print')
     end
+
+    it "should parse with newline disable" do
+      should_parse("HAI\nVISIBLE 1!", 'print')
+    end
   end
   
 
