@@ -12,7 +12,11 @@ All Supported Syntax
 Must start every program with this:
   HAI  
 
-Strings(YARNS)
+Booleans(TROOF):
+  WIN
+  FAIL
+  
+Strings(YARNS):
   "asdf"
 
 Escape Codes:
@@ -37,9 +41,11 @@ Optional exit command:
 Declare a variable with an optional value:
   I HAS A <variable> [ITZ <value>]
 
+Variable assignment:
+  <variable> R <value>
+  
 Increment with optional delta, defaults to 1:
   UP VAR!![<delta>]
-
 
 Equal comparison:
   BOTH SAEM <value> AN <value>
