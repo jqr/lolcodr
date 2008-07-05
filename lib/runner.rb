@@ -11,6 +11,7 @@ def label(text)
 end
 
 code = parser.parse(File.read('count.lolcode') + "\n")
+
 if code
   label 'TREEZ'
   puts code.inspect

@@ -18,7 +18,8 @@ grammar LOLCode
   rule expression
     if_else
     / if
-    / os real_expression os nl {
+    / loop
+    / real_expression nl {
       def value(env = {})
         real_expression.value(env)
       end
@@ -26,16 +27,37 @@ grammar LOLCode
   end
   
   rule real_expression
-    builtin_command / variable_declaration / string / number / boolean
+    os e:(builtin_command / variable_declaration / value_expression) os {
+      def value(env = {})
+        e.value(env)
+      end
+    }
+  end
+  
+  rule value_expression
+    comparison / number / string / boolean / variable
   end
 
   rule builtin_command
-     exit / print / increment_variable
+     exit / break / print / increment_variable
   end
 
   rule if
-    os boolean ', O RLY?' nl os 'YA RLY' os nl expressions:expression* 'OIC' os nl {
+    os boolean:value_expression ', O RLY?' nl 'YA RLY' nl expressions:expression* 'OIC' nl {
       def value(env = {})
+        if boolean.value(env)
+          expressions.elements.each do |expression|
+            expression.value(env)
+          end
+        end
+      end
+    }
+  end
+
+  rule if_else
+    os boolean:value_expression ', O RLY?' nl os 'YA RLY' os nl if_expressions:expression* os 'NO WAI' os nl else_expressions:expression* os 'OIC' os nl {
+      def value(env = {})
+        expressions = boolean.value ? if_expressions : else_expressions
         expressions.elements.each do |expression|
           expression.value(env)
         end
@@ -43,12 +65,23 @@ grammar LOLCode
     }
   end
 
-  rule if_else
-    os boolean ', O RLY?' nl os 'YA RLY' os nl if_expressions:expression* 'NO WAI' os nl else_expressions:expression* 'OIC' os nl {
+  rule break
+    'KTHX' {
       def value(env = {})
-        expressions = boolean.value ? if_expressions : else_expressions
-        expressions.elements.each do |expression|
-          expression.value(env)
+        throw :break
+      end
+    }
+  end
+  
+  rule loop
+    os 'IM IN YR' s label os nl expressions:expression* os 'IM OUTTA YR' s label os nl {
+      def value(env = {})
+        catch :break do
+          loop do
+            expressions.elements.each do |expression|
+              expression.value(env)
+            end
+          end
         end
       end
     }
@@ -95,7 +128,7 @@ grammar LOLCode
   end
 
   rule variable_declaration_with_set
-    'I' s 'HAS' s 'A' s variable s 'ITZ' real_expression {
+    'I' s 'HAS' s 'A' s variable s 'ITZ' s real_expression {
       def value(env = {})
         env[variable.text_value] = real_expression.value
       end
@@ -110,8 +143,28 @@ grammar LOLCode
     }
   end
   
+  rule comparison
+    equal
+  end
+  
+  rule equal
+    'BOTH SAEM' s first:value_expression s 'AN' s second:value_expression {
+      def value(env = {})
+        first.value(env) == second.value(env)
+      end
+    }
+  end
+  
+  rule keyword
+    'OIC' / 'BOTH SAEM'
+  end
+  
   rule variable
-    alpha alnum* !alnum
+    !keyword alpha alnum* {
+      def value(env = {})
+        env[text_value]
+      end
+    }
   end
   
   rule string
@@ -123,11 +176,11 @@ grammar LOLCode
   end
 
   rule float
-    os ([1-9] [0-9]* '.' [0-9]+) os	{ def value(env = {}); text_value.to_f; end }
+    numeric+ '.' numeric+ { def value(env = {}); text_value.to_f; end }
   end
   
   rule integer
-    os ([1-9] [0-9]* / '0') os	{ def value(env = {}); text_value.to_i; end }
+    numeric+ { def value(env = {}); text_value.to_i; end }
   end
   
   rule boolean
@@ -136,6 +189,10 @@ grammar LOLCode
         text_value == 'WIN'
       end
     }
+  end
+  
+  rule label
+    alpha+
   end
 
   rule s

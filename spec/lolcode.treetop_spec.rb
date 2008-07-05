@@ -159,6 +159,24 @@ describe "LOLCode" do
     end
   end
   
+  describe "BOTH SAEM" do
+    it "should parse" do
+      should_parse("HAI\nBOTH SAEM 1 AN 2", 'equal')
+    end
+    
+    it "should detect equality" do
+      run("HAI\nBOTH SAEM WIN AN WIN").should == true
+    end
+
+    it "should detect inequality" do
+      run("HAI\nBOTH SAEM WIN AN FAIL").should == false
+    end
+
+    it "should work with NUMBRS" do
+      run("HAI\nBOTH SAEM 1 AN 2").should == false
+    end
+  end
+  
   describe "O RLY?" do
     it "should parse without NO WAI" do
       should_parse("HAI\nWIN, O RLY?\nYA RLY\nOIC", 'if')
@@ -173,11 +191,42 @@ describe "LOLCode" do
       env['VAR'].should == 1
     end
 
+    it "should not execute YA RLY" do
+      run("HAI\nFAIL, O RLY?\nYA RLY\nI HAS A VAR ITZ 1\nOIC")
+      env['VAR'].should_not == 1
+    end
+
     it "should execute NO WAI" do
       run("HAI\nFAIL, O RLY?\nYA RLY\nI HAS A VAR ITZ 1\nNO WAI\nI HAS A VAR ITZ 2\nOIC")
       env['VAR'].should == 2
     end
-    
+  end
+
+  describe "KTHX" do
+    it "should parse" do
+      should_parse("HAI\nKTHX", 'break')
+    end
+
+    it "should trhow :break" do
+      success = true
+      catch :break do
+        run("HAI\nKTHX")
+        success = false
+      end
+      success.should be_true
+    end
+  end
+  
+  describe "IM IN YR LOOPZ" do
+    it "should parse" do
+      should_parse("HAI\nIM IN YR LOOPZ\nIM OUTTA YR LOOPZ", 'loop')
+    end
+
+    it "should loop" do
+      run("HAI\nI HAS A VAR ITZ 1\nIM IN YR LOOPZ\nUP VAR!!\nBOTH SAEM VAR AN 3, O RLY?\nYA RLY\nKTHX\nOIC\nIM OUTTA YR LOOPZ")
+      env['VAR'].should == 3
+    end
+
   end
   
 end
