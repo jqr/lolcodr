@@ -21,6 +21,7 @@ end
 
 def should_parse(code, node)
   (parsed = parse(code)).should_not be_nil
+  # this isn't right, but it is working well-enough for the moment
   parsed.extension_modules.include?(eval("LOLCode::#{camelize(node)}0")).should_not be_nil
 end
 
