@@ -24,11 +24,23 @@ grammar LOLCode
   end
   
   rule real_expression
-    exit / variable_declaration / string / number / boolean
+    builtin_command / variable_declaration / string / number / boolean
+  end
+
+  rule builtin_command
+    exit / print
   end
   
   rule exit
     'KTHXBYE' { def value(env = {}); exit; end }
+  end
+  
+  rule print
+    'VISIBLE' s real_expression {
+      def value(env = {})
+        puts real_expression.value
+      end
+    }
   end
   
   rule variable_declaration

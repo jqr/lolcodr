@@ -90,6 +90,13 @@ describe "LOLCode" do
     end
   end
 
+  describe "VISIBLE" do
+    it "should parse" do
+      should_parse("HAI\nVISIBLE 1", 'print')
+    end
+  end
+  
+
   describe "I HAS A VAR" do
     it "should parse" do
       should_parse("HAI\nI HAS A VAR", 'variable_declaration_without_set')

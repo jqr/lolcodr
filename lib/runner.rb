@@ -19,7 +19,7 @@ if code
   value, env = code.run
   
   label 'INSPEKT'
-  puts "output = #{value.inspect}"
+  puts "returns = #{value.inspect}"
   puts env.inspect
 else
   puts "O NOES! UR CODE ARE GOING TO BASEMENT!!!"
