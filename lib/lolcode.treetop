@@ -12,7 +12,7 @@ grammar LOLCode
   end
   
   rule start
-    'HAI' os nl
+    onl 'HAI' os nl
   end
   
   rule expression
@@ -108,9 +108,13 @@ grammar LOLCode
   end
   
   rule nl
-    [\n]
+    [\n]+
   end
 
+  rule onl
+    nl*
+  end
+  
   rule alpha
     [a-zA-Z]
   end

@@ -35,8 +35,22 @@ describe "LOLCode" do
       should_parse('HAI', 'program')
     end
 
+    it "should parse a leading newline" do
+      should_parse("\nHAI", 'program')
+    end
+
+    it "should parse extra newlines" do
+      should_parse("HAI\n\n\n", 'program')
+    end
+
     it "should be required" do
       should_not_parse('')
+    end
+  end
+  
+  describe "basic parsing" do
+    it "should parse a leading newline" do
+      should_parse("\nHAI", 'program')
     end
   end
 
