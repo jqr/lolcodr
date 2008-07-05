@@ -155,6 +155,17 @@ describe "LOLCode" do
     end
   end
   
+  describe "VAR R 3" do
+    it "should parse" do
+      should_parse("HAI\nVAR R 123", 'variable_assignment')
+    end
+    
+    it "should assign a value" do
+      run("HAI\nI HAS A VAR ITZ 1\nVAR R 123")
+      env['VAR'].should == 123
+    end
+  end
+  
   describe "UP VAR!!" do
     it "should parse" do
       should_parse("HAI\nI HAS A VAR ITZ 1\nUP VAR!!", 'increment_variable_without_delta')

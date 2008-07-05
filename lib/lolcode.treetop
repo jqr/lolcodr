@@ -28,7 +28,7 @@ grammar LOLCode
   end
   
   rule real_expression
-    os e:(builtin_command / variable_declaration / value_expression) os {
+    os e:(builtin_command / value_expression) os {
       def value(env)
         e.value(env)
       end
@@ -40,7 +40,7 @@ grammar LOLCode
   end
 
   rule builtin_command
-     exit / break / print / get_line / increment_variable
+     exit / break / print / get_line / variable_declaration / increment_variable / variable_assignment
   end
 
   rule if
@@ -162,6 +162,14 @@ grammar LOLCode
     }
   end
   
+  rule variable_assignment
+    os variable s 'R' s value_expression {
+      def value(env)
+        env[variable.text_value] = value_expression.value(env)
+      end
+    }
+  end
+  
   rule comparison
     equal
   end
@@ -175,7 +183,7 @@ grammar LOLCode
   end
   
   rule keyword
-    'OIC' / 'BOTH SAEM' / 'IZ'
+    'KTHXBYE' / 'KTHX' / 'GTFO' / 'OIC' / 'BOTH SAEM' / 'IZ'
   end
   
   rule variable
