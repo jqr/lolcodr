@@ -189,6 +189,32 @@ describe "LOLCode" do
     end
   end
   
+  describe "TIPE OF" do
+    it "should parse" do
+      should_parse("HAI\nTIPE OF VAR", 'type_query')
+    end
+
+    it "should return NOOB" do
+      run("HAI\nI HAS A VAR\nTIPE OF VAR").should == "NOOB"
+    end
+    
+    it "should return TROOF" do
+      run("HAI\nTIPE OF WIN").should == "TROOF"
+    end
+
+    it "should return YARN" do
+      run(%Q{HAI\nTIPE OF "O HAI"}).should == "YARN"
+    end
+
+    it "should return NUMBR" do
+      run("HAI\nTIPE OF 123").should == "NUMBR"
+    end
+
+    it "should return NUMBAR" do
+      run("HAI\nTIPE OF 123.456").should == "NUMBAR"
+    end
+  end
+  
   describe "BOTH SAEM" do
     it "should parse" do
       should_parse("HAI\nBOTH SAEM 1 AN 2", 'equal')

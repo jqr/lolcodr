@@ -36,7 +36,7 @@ grammar LOLCode
   end
   
   rule value_expression
-    comparison / number / string / boolean / variable
+    comparison / type_query / number / string / boolean / variable
   end
 
   rule builtin_command
@@ -163,9 +163,28 @@ grammar LOLCode
   end
   
   rule variable_assignment
-    os variable s 'R' s value_expression {
+    variable s 'R' s value_expression {
       def value(env)
         env[variable.text_value] = value_expression.value(env)
+      end
+    }
+  end
+  
+  rule type_query
+    'TIPE OF' s value_expression {
+      def value(env)
+        case(value_expression.value(env))
+        when NilClass
+          'NOOB'
+        when TrueClass, FalseClass
+          'TROOF'
+        when String
+          'YARN'
+        when Integer, Bignum
+          'NUMBR'
+        when Float
+          'NUMBAR'
+        end
       end
     }
   end
@@ -183,7 +202,7 @@ grammar LOLCode
   end
   
   rule keyword
-    'KTHXBYE' / 'KTHX' / 'GTFO' / 'OIC' / 'BOTH SAEM' / 'IZ'
+    'KTHXBYE' / 'KTHX' / 'GTFO' / 'OIC' / 'BOTH SAEM' / 'IZ' / 'TIPE'
   end
   
   rule variable
